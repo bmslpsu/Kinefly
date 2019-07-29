@@ -1,8 +1,7 @@
 <launch>
 	<!-- ========================================================== -->
-	<!-- Configuration of the Kinefly                               -->
+	<!--            Configuration of the Kinefly                    -->
 	<!-- ========================================================== -->
-
 
     <param name="parameterfile"     type="string" value="$(env HOME)/kinefly.yaml" />
     <param name="filenameBackground" type="string" value="$(env HOME)/kinefly.png" />
@@ -38,6 +37,5 @@
     <param name="right/saturation_correction"  type="bool"   value="false" />
     
     <param name="aux/tracker"       type="string"  value="intensity" />
-    
-    
+
 </launch>

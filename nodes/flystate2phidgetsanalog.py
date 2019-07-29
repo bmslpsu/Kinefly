@@ -9,6 +9,8 @@ from Kinefly.msg import MsgFlystate
 import Phidgets
 import Phidgets.Devices.Analog
 from setdict import SetDict
+import dynamic_reconfigure.server
+from Kinefly.cfg import flystate2phidgetsanalogConfig
 
 
 ###############################################################################
@@ -26,6 +28,8 @@ class Flystate2PhidgetsAnalog:
         self.nodename = rospy.get_name()
         self.namespace = rospy.get_namespace()
         rospy.logwarn('Phidget: AO Initialized')
+
+        self.reconfigure = dynamic_reconfigure.server.Server(flystate2phidgetsanalogConfig, self.reconfigure_callback)
         
         # Load the parameters.
         self.params = rospy.get_param('%s' % self.nodename.rstrip('/'), {})
@@ -219,7 +223,19 @@ class Flystate2PhidgetsAnalog:
                        
         return voltages.clip(-10.0, 10.0)
 
+    def reconfigure_callback(self, config, level):
+        rospy.loginfo("""Reconfigure Request: {v0l1} , {v0r1} , {v0ha} """.format(
+            **config))
+        # Save the new params.
+        #SetDict().set_dict_with_overwrite(self.params, config)
     
+        # Remove dynamic_reconfigure keys from the params.
+        #try:
+            #self.params.pop('groups')
+        #except KeyError:
+            #pass
+        
+        return config
         
     # command_callback()
     # Execute any commands sent over the command topic.
