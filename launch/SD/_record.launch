@@ -1,0 +1,11 @@
+<launch>
+	<!-- ========================================================== -->
+	<!-- Record a .bag file with 1 camera image stream  and         --> 
+	<!-- stimulus voltage recording.                                -->
+	<!-- ========================================================== -->
+
+    <arg name="prefix" default="" />
+    
+    <node name="rosbag"  pkg="rosbag"   type="record" args="-j --buffsize=4096 -o $(env HOME)/$(arg prefix)  /MC_AI" />
+
+</launch>

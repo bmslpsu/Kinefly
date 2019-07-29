@@ -1,0 +1,22 @@
+<launch>
+
+    <!-- ========================================================== -->
+    <!-- This file writes a .bag file containing the image stream,  -->
+    <!-- etc, for Kinefly on the hardware rig you are using, based  -->
+    <!-- on the environment variable "RIG".                         -->
+    <!--                                                            -->
+    <!-- roslaunch Kinefly record.launch                            -->
+    <!--                                                            -->
+    <!-- ========================================================== -->
+
+    <arg name="prefix" default=""               />
+    <arg name="time"   default="100"            />
+	<arg name="root"   default="$(env HOME)"    />
+
+    <include file="$(find Kinefly)/launch/$(env RIG)/_record.launch" >
+        <arg name="prefix"  value="$(arg prefix)"  	/>
+		<arg name="time"    value="$(arg time)"    	/>
+		<arg name="root"   	value="$(arg root)" 	/>
+    </include>
+
+</launch>

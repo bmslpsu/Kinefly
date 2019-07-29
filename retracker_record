@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [ "$BAGFILESPEC" = "" ]; then
+  echo "This program reruns Kinefly on one or more .bag files, as"
+  echo "specified by the BAGFILESPEC environment variable."
+  echo ""
+  echo "BAGFILESPEC is not set. Use \"export BAGFILESPEC=/path/to/file*.bag\""
+  echo ""
+  echo "Note: you must also have set the environment variable RIG to"
+  echo "the name of your hardware.  See the Kinefly install.txt"
+  echo ""
+else
+  #echo $BAGFILESPEC
+  for fn in `ls $BAGFILESPEC`; do
+	filename=$(basename "${fn%.*}")
+	echo "BASENAME: $filename"
+    echo "******************************** Kinefly is retracking: $fn"
+    export BAGFILE=$fn
+	roslaunch Kinefly record.launch prefix:=$filename time:=310 &
+    	RETRACK=1 roslaunch Kinefly main.launch
+  done
+fi
