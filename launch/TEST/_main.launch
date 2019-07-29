@@ -15,4 +15,6 @@
 
 	<include file="$(find Kinefly)/launch/$(env RIG)/fictrac_camera.launch" 		/>
 
+	<!-- include file="$(find Kinefly)/launch/$(env RIG)/fictrac_camera.launch" 		/ -->
+
 </launch>
