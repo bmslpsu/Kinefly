@@ -8,6 +8,6 @@
     <arg name="time" 	default="100" 			/>
 	<arg name="root" 	default="$(env HOME)" 	/>
 	
-    <node name="rosbag"  pkg="rosbag"   type="record" args="-j --buffsize=2048 --duration=$(arg time) /chatter -o $(arg root)/$(arg prefix) /camera/image_raw /kinefly/flystate /mcdaq/AI /usb_cam/image_raw " />
+    <node name="rosbag"  pkg="rosbag"   type="record" args="-j --buffsize=2048 --duration=$(arg time) /chatter -o $(arg root)/$(arg prefix) /camera/image_raw /kinefly/flystate /mcdaq/AI " />
 
 </launch>

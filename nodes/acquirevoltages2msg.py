@@ -42,11 +42,11 @@ class AcquireVoltages2Msg:
         self.command = None
 
         # Messages & Services.
-        self.topicAI = '%s/ai' % self.namespace.rstrip('/')
-        self.pubAI       = rospy.Publisher(self.topicAI, MsgAnalogIn)
-        self.topicDI = '%s/di' % self.namespace.rstrip('/')
-        self.pubDI       = rospy.Publisher(self.topicDI, MsgDigitalIn)
-        self.subCommand  = rospy.Subscriber('%s/command' % self.nodename.rstrip('/'), String, self.command_callback, queue_size=1000)
+        self.topicAI    = '%s/ai' % self.namespace.rstrip('/')
+        self.pubAI      = rospy.Publisher(self.topicAI, MsgAnalogIn)
+        self.topicDI    = '%s/di' % self.namespace.rstrip('/')
+        self.pubDI      = rospy.Publisher(self.topicDI, MsgDigitalIn)
+        self.subCommand = rospy.Subscriber('%s/command' % self.nodename.rstrip('/'), String, self.command_callback, queue_size=1000)
         
         self.get_ai = rospy.ServiceProxy('get_ai', SrvPhidgetsInterfaceKitGetAI)
         self.get_di = rospy.ServiceProxy('get_di', SrvPhidgetsInterfaceKitGetDI)

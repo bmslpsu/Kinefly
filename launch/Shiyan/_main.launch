@@ -11,6 +11,6 @@
 
 	<!-- node name="ReadAI"     	pkg="daq_test_1"   	type="ReadAI.py"      	required="false" / -->
 
-	<!-- node name="flystate2phidgetsanalog"    pkg="Kinefly"   type="flystate2phidgetsanalog.py" ns="kinefly -->"  required="true"	/>
+	<!-- node name="flystate2phidgetsanalog"    pkg="Kinefly"   type="flystate2phidgetsanalog_new.py" ns="kinefly -->"  required="true"	/>
 
 </launch>
