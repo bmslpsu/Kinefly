@@ -27,7 +27,7 @@ gbShowMasks = False
 class Struct:
     pass
 
-        
+
 
 ###############################################################################
 ###############################################################################
@@ -1287,4 +1287,3 @@ if __name__ == '__main__':
     # $ ln -s "$PWD"/gprof2dot/gprof2dot.py ~/bin
     # $ cd /home/ssafarik
     # $ ~/bin/gprof2dot.py -f pstats profile.pstats | dot -Tsvg -o callgraph.svg
-    

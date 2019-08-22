@@ -28,35 +28,28 @@ class Flystate2PhidgetsAnalog:
 		self.nodename = rospy.get_name()
 		self.namespace = rospy.get_namespace()
 		
-		rospy.sleep(2)  # Wait so that other nodes can display their banner first.
-		rospy.logwarn('**************************************************************************')
-		rospy.logwarn('Phidget: AO Initialized')
-		
 		# Load the parameters.
 		self.params = rospy.get_param('%s' % self.nodename.rstrip('/'), {})
 		self.defaults = {'v0enable': True, 'v1enable': True, 'v2enable': True, 'v3enable': True,
-						 'v00': 0.0, 'v0l1': 0.0, 'v0l2': 0.0, 'v0lr': 0.0, 'v0r1': 0.0, 'v0r2': 0.0, 'v0rr': 0.0, 'v0ha': 0.0,
-						 'v0hr': 0.0, 'v0aa': 0.0, 'v0ar': 0.0, 'v0xi': 0.0,  # L
-						 'v10': 0.0, 'v1l1': 0.0, 'v1l2': 0.0, 'v1lr': 0.0, 'v1r1': 0.0, 'v1r2': 0.0, 'v1rr': 0.0, 'v1ha': 0.0,
-						 'v1hr': 0.0, 'v1aa': 0.0, 'v1ar': 0.0, 'v1xi': 0.0,  # R
-						 'v20': 0.0, 'v2l1': 0.0, 'v2l2': 0.0, 'v2lr': 0.0, 'v2r1': 0.0, 'v2r2': 0.0, 'v2rr': 0.0, 'v2ha': 0.0,
-						 'v2hr': 0.0, 'v2aa': 0.0, 'v2ar': 0.0, 'v2xi': 0.0,  # L-R
-						 'v30': 0.0, 'v3l1': 0.0, 'v3l2': 0.0, 'v3lr': 0.0, 'v3r1': 0.0, 'v3r2': 0.0, 'v3rr': 0.0, 'v3ha': 0.0,
-						 'v3hr': 0.0, 'v3aa': 0.0, 'v3ar': 0.0, 'v3xi': 0.0,  # L+R
+						 'v00': 0.0, 'v0l1': 0.0, 'v0l2': 0.0, 'v0lr': 0.0, 'v0r1': 0.0, 'v0r2': 0.0, 'v0rr': 0.0, 'v0ha': 0.0, 'v0hr': 0.0, 'v0aa': 0.0, 'v0ar': 0.0, 'v0xi': 0.0,  # L
+						 'v10': 0.0, 'v1l1': 0.0, 'v1l2': 0.0, 'v1lr': 0.0, 'v1r1': 0.0, 'v1r2': 0.0, 'v1rr': 0.0, 'v1ha': 0.0, 'v1hr': 0.0, 'v1aa': 0.0, 'v1ar': 0.0, 'v1xi': 0.0,  # R
+						 'v20': 0.0, 'v2l1': 0.0, 'v2l2': 0.0, 'v2lr': 0.0, 'v2r1': 0.0, 'v2r2': 0.0, 'v2rr': 0.0, 'v2ha': 0.0, 'v2hr': 0.0, 'v2aa': 0.0, 'v2ar': 0.0, 'v2xi': 0.0,  # L-R
+						 'v30': 0.0, 'v3l1': 0.0, 'v3l2': 0.0, 'v3lr': 0.0, 'v3r1': 0.0, 'v3r2': 0.0, 'v3rr': 0.0, 'v3ha': 0.0, 'v3hr': 0.0, 'v3aa': 0.0, 'v3ar': 0.0, 'v3xi': 0.0,  # L+R
 						 'autorange': False,
 						 'serial': 0  # The serial number of the Phidget.  0==any.
 						 }
 		SetDict().set_dict_with_preserve(self.params, self.defaults)
 		rospy.set_param('%s' % self.nodename.rstrip('/'), self.params)
 		
-		self.reconfigure = dynamic_reconfigure.server.Server(flystate2phidgetsanalogConfig, self.reconfigure_callback)
-		
-		self.stateMin = np.array([np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf])
+		self.stateMin = np.array([np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf,
+								  np.inf])
 		self.stateMax = np.array(
 			[-np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf])
 		
 		self.update_coefficients()
 		
+		rospy.sleep(2)  # Allow time to connect publishers & subscribers.
+
 		# Connect to the Phidget.
 		self.analog = Phidgets.Devices.Analog.Analog()
 		if self.params['serial'] == 0:
@@ -68,12 +61,17 @@ class Flystate2PhidgetsAnalog:
 		self.analog.setOnDetachHandler(self.detach_callback)
 		
 		# Subscriptions.
-		self.subFlystate = rospy.Subscriber('%s/flystate' % self.namespace.rstrip('/'), MsgFlystate, self.flystate_callback,
-											queue_size=1000)
-		self.subCommand = rospy.Subscriber('%s/command' % self.nodename.rstrip('/'), String, self.command_callback,
-										   queue_size=1000)
-		rospy.sleep(1)  # Allow time to connect publishers & subscribers.
+		self.subFlystate = rospy.Subscriber('%s/flystate' % self.namespace.rstrip('/'), MsgFlystate, self.flystate_callback, queue_size=1000)
+		self.subCommand = rospy.Subscriber('%s/command' % self.nodename.rstrip('/'), String, self.command_callback, queue_size=1000)
 		
+		# Publishers.
+		self.topic_coefficients = self.nodename + '/vcoeff'
+		rospy.logwarn(self.topic_coefficients)
+		#self.pubAI = rospy.Publisher(self.topic_coefficients, MC_AnalogIN, queue_size = 2)
+		
+		# Dynamic Reconfigure Callback.
+		self.reconfigure = dynamic_reconfigure.server.Server(flystate2phidgetsanalogConfig, self.reconfigure_callback)
+
 		self.bInitialized = True
 	
 	def attach_callback(self, phidget):
@@ -166,20 +164,15 @@ class Flystate2PhidgetsAnalog:
 	
 	def flystate_callback(self, flystate):
 		self.iCount += 1
-		print('WUTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT')
+		#rospy.logwarn(self.bAttached)
 		
-		# self.update_coefficients()
+		#self.update_coefficients()
 		# rospy.logwarn(self.params['v0l1'])
 		
 		if self.bAttached:
 			voltages = self.voltages_from_flystate(flystate)
-			rospy.logwarn(voltages)
-			# self.saturation_high = all(i <= 10 for i in voltages)
-			# self.saturation_low = all(i >= -10 for i in voltages)
-			
-			# if (not self.saturation_high) or (not self.saturation_low):
-			# rospy.logwarn("Phidget output voltage is saturated")
-			
+			#rospy.logwarn(voltages)
+		
 			for i in range(4):
 				if self.enable[i]:
 					try:
@@ -232,6 +225,15 @@ class Flystate2PhidgetsAnalog:
 		
 		voltages = np.dot(self.a, state)
 		
+		self.saturation_high = any(i >  10 for i in voltages)
+		self.saturation_low  = any(i < -10 for i in voltages)
+		
+		# Check for voltage saturation [-10 10]
+		if self.saturation_high or self.saturation_low:
+			rospy.logwarn("Phidget output voltage is saturated")
+			for i in range(2):
+				rospy.logwarn("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+		
 		# L1,L2,R1,R2,HA,AA are all in radians; LR,RR are in pixels; XI is intensity on the range [0,1].
 		# v00,v0l1,v0l2,v0lr,v0r1,v0r2,v0rr,v0ha,v0hr,v0aa,v0ar,v0xi are coefficients to convert to voltage.
 		#         voltages[0] = self.v00 + self.v0l1*L1 + self.v0l2*L2 + self.v0lr*LR + \
@@ -249,8 +251,9 @@ class Flystate2PhidgetsAnalog:
 		rospy.logwarn("""   v2L1:{v2l1} , v2R1:{v2r1} , v2H:{v2ha} """.format(**config))
 		rospy.logwarn("""   v3L1:{v3l1} , v3R1:{v3r1} , v3H:{v3ha} """.format(**config))
 		
-		# Save the new params.
+		# Save the new params & update coefficents
 		SetDict().set_dict_with_overwrite(self.params, config)
+		self.update_coefficients()
 		
 		return config
 	

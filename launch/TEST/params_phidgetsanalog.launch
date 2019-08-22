@@ -1,11 +1,12 @@
 <launch>
 	<!-- ========================================================== -->
-	<!-- Configuration of the flystate-to-phidgetsanalog.           -->
+	<!-- Configuration of the Phidgets Analog.                      -->
 	<!-- ========================================================== -->
 
-    <!-- 
+
+    <!--
     Description of the voltage coefficients, for channel #, where # is one of {0, 1, 2, 3}
-    
+
     v#0  - constant offset
     v#ha - head angle
     v#hr - head radius
@@ -18,7 +19,7 @@
     v#r2 - right wing second edge angle
     v#rr - right wing radius
     v#xi - aux intensity
-    
+
     The output voltage for channel # comes from an equation such as:
     v#out = v#0 + v#ha*headangle + v#hr*headradius + v#aa*abdomenangle + v#ar*abdomenradius + v#l1*leftangle1 + ...
     -->
@@ -75,7 +76,7 @@
 
     <!-- Voltage Channel 3 -->
     <param name="flystate2phidgetsanalog/v3enable"    type="bool"   value="true" />
-    <param name="flystate2phidgetsanalog/v30"         type="double" value="0.0" />
+    <param name="flystate2phidgetsanalog/v30"         type="double" value="0" />
     <param name="flystate2phidgetsanalog/v3ha"        type="double" value="0.0" />
     <param name="flystate2phidgetsanalog/v3hr"        type="double" value="0.0" />
     <param name="flystate2phidgetsanalog/v3aa"        type="double" value="0.0" />
@@ -87,6 +88,6 @@
     <param name="flystate2phidgetsanalog/v3r2"        type="double" value="0.0" />
     <param name="flystate2phidgetsanalog/v3rr"        type="double" value="0.0" />
     <param name="flystate2phidgetsanalog/v3xi"        type="double" value="0.0" />
-    
+
 
 </launch>

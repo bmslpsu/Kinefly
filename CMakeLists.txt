@@ -68,4 +68,3 @@ install(DIRECTORY
   FILES_MATCHING PATTERN "*.launch"
   PATTERN ".svn" EXCLUDE
 )
-
