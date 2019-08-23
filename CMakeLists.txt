@@ -20,6 +20,10 @@ add_message_files(
   MsgFloat32List.msg
   MsgFlystate.msg
   MsgState.msg
+
+  MsgAnalogOut.msg
+  MsgAOPhidget.msg
+  MsgAOPhidgetState.msg
 )
 
 ## Generate services in the 'srv' folder

@@ -4,8 +4,8 @@ import rospy
 import rosparam
 import copy
 import numpy as np
-from std_msgs.msg import String
-from Kinefly.msg import MsgFlystate
+from std_msgs.msg import String,Header
+from Kinefly.msg import MsgFlystate, MsgAnalogOut, MsgAOPhidgetState, MsgAOPhidget
 import Phidgets
 import Phidgets.Devices.Analog
 from setdict import SetDict
@@ -65,10 +65,15 @@ class Flystate2PhidgetsAnalog:
 		self.subCommand = rospy.Subscriber('%s/command' % self.nodename.rstrip('/'), String, self.command_callback, queue_size=1000)
 		
 		# Publishers.
+		self.topic_voltages = self.nodename + '/voltages'
 		self.topic_coefficients = self.nodename + '/vcoeff'
-		rospy.logwarn(self.topic_coefficients)
-		#self.pubAI = rospy.Publisher(self.topic_coefficients, MC_AnalogIN, queue_size = 2)
-		
+
+		self.pubAO = rospy.Publisher(self.topic_voltages, MsgAnalogOut, queue_size = 100)
+		self.pubVC = rospy.Publisher(self.topic_coefficients, MsgAOPhidgetState, queue_size = 2)
+
+		self.iCount = 0
+		self.vCount = 0
+
 		# Dynamic Reconfigure Callback.
 		self.reconfigure = dynamic_reconfigure.server.Server(flystate2phidgetsanalogConfig, self.reconfigure_callback)
 
@@ -172,6 +177,11 @@ class Flystate2PhidgetsAnalog:
 		if self.bAttached:
 			voltages = self.voltages_from_flystate(flystate)
 			#rospy.logwarn(voltages)
+			
+			# Publish voltages to topic
+			header = Header(seq=self.iCount, stamp=rospy.Time.now())
+			self.pubAO.publish(header, [0, 1 ,2 ,3], voltages)
+			self.iCount += 1
 		
 			for i in range(4):
 				if self.enable[i]:
@@ -183,16 +193,16 @@ class Flystate2PhidgetsAnalog:
 	# get_voltages()
 	#
 	def voltages_from_flystate(self, flystate):
-		angle1Left = flystate.left.angles[0] if (0 < len(flystate.left.angles)) else 0.0
-		angle2Left = flystate.left.angles[1] if (1 < len(flystate.left.angles)) else 0.0
-		radiusLeft = flystate.left.radii[0] if (0 < len(flystate.left.radii)) else 0.0
-		angle1Right = flystate.right.angles[0] if (0 < len(flystate.right.angles)) else 0.0
-		angle2Right = flystate.right.angles[1] if (1 < len(flystate.right.angles)) else 0.0
-		radiusRight = flystate.right.radii[0] if (0 < len(flystate.right.radii)) else 0.0
+		angle1Left    = flystate.left.angles[0] if (0 < len(flystate.left.angles)) else 0.0
+		angle2Left    = flystate.left.angles[1] if (1 < len(flystate.left.angles)) else 0.0
+		radiusLeft    = flystate.left.radii[0] if (0 < len(flystate.left.radii)) else 0.0
+		angle1Right   = flystate.right.angles[0] if (0 < len(flystate.right.angles)) else 0.0
+		angle2Right   = flystate.right.angles[1] if (1 < len(flystate.right.angles)) else 0.0
+		radiusRight   = flystate.right.radii[0] if (0 < len(flystate.right.radii)) else 0.0
 		
-		angleHead = flystate.head.angles[0] if (0 < len(flystate.head.angles)) else 0.0
-		radiusHead = flystate.head.radii[0] if (0 < len(flystate.head.radii)) else 0.0
-		angleAbdomen = flystate.abdomen.angles[0] if (0 < len(flystate.abdomen.angles)) else 0.0
+		angleHead	  = flystate.head.angles[0] if (0 < len(flystate.head.angles)) else 0.0
+		radiusHead    = flystate.head.radii[0] if (0 < len(flystate.head.radii)) else 0.0
+		angleAbdomen  = flystate.abdomen.angles[0] if (0 < len(flystate.abdomen.angles)) else 0.0
 		radiusAbdomen = flystate.abdomen.radii[0] if (0 < len(flystate.abdomen.radii)) else 0.0
 		
 		state = np.array([1.0,
@@ -254,6 +264,38 @@ class Flystate2PhidgetsAnalog:
 		# Save the new params & update coefficents
 		SetDict().set_dict_with_overwrite(self.params, config)
 		self.update_coefficients()
+		
+		# Publish paramters to topic
+		vstate = MsgAOPhidgetState()
+		vstate.header = Header(seq=self.vCount, stamp=rospy.Time.now(), frame_id='Fly')
+		
+		vstate.v0 = MsgAOPhidget()
+		vstate.v1 = MsgAOPhidget()
+		vstate.v2 = MsgAOPhidget()
+		vstate.v3 = MsgAOPhidget()
+		
+		vstate.v0.L  = [self.params['v0l1'], self.params['v0l2'], self.params['v0lr']]
+		vstate.v0.R  = [self.params['v0r1'], self.params['v0r2'], self.params['v0rr']]
+		vstate.v0.H  = [self.params['v0ha'], self.params['v0hr']]
+		vstate.v0.A  = [self.params['v0aa'], self.params['v0ar']]
+		
+		vstate.v1.L  = [self.params['v1l1'], self.params['v1l2'], self.params['v1lr']]
+		vstate.v1.R  = [self.params['v1r1'], self.params['v1r2'], self.params['v1rr']]
+		vstate.v1.H  = [self.params['v1ha'], self.params['v1hr']]
+		vstate.v1.A  = [self.params['v1aa'], self.params['v1ar']]
+		
+		vstate.v2.L  = [self.params['v2l1'], self.params['v2l2'], self.params['v2lr']]
+		vstate.v2.R  = [self.params['v2r1'], self.params['v2r2'], self.params['v2rr']]
+		vstate.v2.H  = [self.params['v2ha'], self.params['v2hr']]
+		vstate.v2.A  = [self.params['v2aa'], self.params['v2ar']]
+		
+		vstate.v3.L  = [self.params['v3l1'], self.params['v3l2'], self.params['v3lr']]
+		vstate.v3.R  = [self.params['v3r1'], self.params['v3r2'], self.params['v3rr']]
+		vstate.v3.H  = [self.params['v3ha'], self.params['v3hr']]
+		vstate.v3.A  = [self.params['v3aa'], self.params['v3ar']]
+		
+		self.pubVC.publish(vstate)
+		self.vCount += 1
 		
 		return config
 	

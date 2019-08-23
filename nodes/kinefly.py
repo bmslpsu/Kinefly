@@ -103,7 +103,7 @@ class MainWindow:
                                               'y':150},
                                        'pt2':{'x':310,
                                               'y':250}},
-                            'head':   {'track':True,            # To track, or not to track.
+                            'head':   {'track':False,            # To track, or not to track.
                                        'subtract_bg':False,     # Use background subtraction?
                                        'stabilize':False,       # Image stabilization of the bodypart.
                                        'hinge':{'x':300,        # Hinge position in image coordinates.
@@ -112,7 +112,7 @@ class MainWindow:
                                        'radius_inner':50,       # Inner radius in pixel units.
                                        'angle_hi':0.7854,       # Angle limit in radians.
                                        'angle_lo':-0.7854},     # Angle limit in radians.
-                            'abdomen':{'track':True,
+                            'abdomen':{'track':False,
                                        'subtract_bg':False,
                                        'stabilize':False,
                                        'hinge':{'x':300,
@@ -121,7 +121,7 @@ class MainWindow:
                                        'radius_inner':100,
                                        'angle_hi':3.927, 
                                        'angle_lo':2.3562},
-                            'left':   {'track':True,
+                            'left':   {'track':False,
                                        'subtract_bg':False,
                                        'stabilize':False,
                                        'hinge':{'x':250,
@@ -130,7 +130,7 @@ class MainWindow:
                                        'radius_inner':50,
                                        'angle_hi':-0.7854, 
                                        'angle_lo':-2.3562},
-                            'right':  {'track':True,
+                            'right':  {'track':False,
                                        'subtract_bg':False,
                                        'stabilize':False,
                                        'hinge':{'x':350,
@@ -139,7 +139,7 @@ class MainWindow:
                                        'radius_inner':50,
                                        'angle_hi':2.3562, 
                                        'angle_lo':0.7854},
-                            'aux':    {'track':True,
+                            'aux':    {'track':False,
                                        'subtract_bg':False,
                                        'center':{'x':350,
                                                  'y':150},
