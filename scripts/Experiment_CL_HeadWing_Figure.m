@@ -4,25 +4,23 @@ function [] = Experiment_CL_HeadWing_Figure(Fn)
 %   INPUT:
 %       Fn      : fly #
 %---------------------------------------------------------------------------------------------------------------------------------
-% rootdir = '/home/jean-michel/bagfiles/Experiment_Wing_CL/'
-% Fn = 1;
+Fn = 1;
 %---------------------------------------------------------------------------------------------------------------------------------
 %% Set directories & experimental paramters %%
 %---------------------------------------------------------------------------------------------------------------------------------
-% addpath(genpath('/home/jean-michel/Documents/MATLAB/MatlabCodes')) % add controller functions to path
 roscmd = 'export LD_LIBRARY_PATH="/home/jean-michel/catkin/devel/lib:/opt/ros/kinetic/lib:/opt/ros/kinetic/lib/x86_64-linux-gnu";';
-Panel_com('stop')
+rootdir = '/home/jean-michel/Experiment_Data/TEST';
 
 % EXPERIMENTAL PARAMETERS
 n.exp   = 20 + 2;   % experiment time [s] (add 2 second buffer)
 n.rest  = 5;     	% rest time [s]
 n.pause = 0.2;  	% pause between panel commands [s]
-n.rep   = 5;        % # of repetitions per fly
+n.rep   = 5;        % # of repetitions per condition per fly
 
 %% Set Experimental Gain Sequence %%
 %---------------------------------------------------------------------------------------------------------------------------------
-WG = [0]; % wing gains
-HG = [4 8 11]; % head gains
+WG = [1]; % wing gains
+HG = [2]; % head gains
 Gain = nan(length(unique(WG))*length(unique(HG)),2);
 pp = 1;
 for kk = 1:length(WG)
@@ -38,7 +36,13 @@ n.trial = length(Gain_all);
 
 %% EXPERIMENT LOOP %%
 %---------------------------------------------------------------------------------------------------------------------------------
-[~,~] = system('killall -9 rosmaster'); % kill rosmaster
+system('killall -9 rosmaster'); % kill rosmaster
+% Panel_com('reset',0)
+
+% Start Kinefly with set AO parameters
+system([roscmd 'roslaunch Kinefly main.launch' ' & echo $!']);
+pause(3)
+
 tic
 fprintf('Begin Experiment \n \n')
 for kk = 1:n.trial
@@ -52,31 +56,25 @@ for kk = 1:n.trial
     disp(['Trial ' num2str(kk) ': ' filename ]) 
     disp('-------------------------------------------------------')
     
-    % Start Kinefly with set AO parameters
-	[status,~] = system([roscmd 'roslaunch Kinefly main_GAIN.launch WGain:=' num2str(WGain) ' HGain:=' num2str(HGain) ' & echo $!']);
-    if status~=0
-        error('Kinefly did not launch')
-    else
-        disp('Kinefly: initialized')
-    end
-    
-    % Rest for 5 seconds while opening Kinefly
-    CL_X(5)
+    % Set gain parameters
+    system([roscmd 'rosrun dynamic_reconfigure dynparam set /kinefly/flystate2phidgetsanalog v1l1 ' num2str( WGain) '& echo $!']);
+  	system([roscmd 'rosrun dynamic_reconfigure dynparam set /kinefly/flystate2phidgetsanalog v1r1 ' num2str(-WGain) '& echo $!']);
+  	system([roscmd 'rosrun dynamic_reconfigure dynparam set /kinefly/flystate2phidgetsanalog v1ha ' num2str( HGain) '& echo $!']);
+
+    % Rest while opening Kinefly
+    Arena_CL(2,'x',-15)
+    pause(3)
     
     % Closed-loop trial
     disp('Closed-loop experiment:')
 	Panel_com('stop'); pause(n.pause)
 	Panel_com('set_pattern_id', 1);pause(n.pause)                   % set output to p_rest_pat (Pattern_Fourier_bar_barwidth=8)
-	Panel_com('set_position',[1, 90]); pause(n.pause)                % set starting position (xpos,ypos)
+	Panel_com('set_position',[1, 40]); pause(n.pause)           	% set starting position (xpos,ypos)
 	Panel_com('set_mode',[1,0]); pause(n.pause)                     % closed loop tracking (NOTE: 0=open, 1=closed)
 	Panel_com('send_gain_bias',[-10,0,0,0]); pause(n.pause)         % [xgain,xoffset,ygain,yoffset]
     
-    [status,~] = system([roscmd 'roslaunch Kinefly record.launch prefix:=' filename ' time:=' num2str(n.exp) ' & echo $!']);
-    if status~=0
-        error('Record did not launch')
-    else
-        disp('Recording...')
-    end
+  	system([roscmd 'roslaunch Kinefly record.launch prefix:=' filename ...      % start recording
+        ' time:=' num2str(n.exp) ' root:=' num2str(rootdir) ' & echo $!']);
     
     % Run experiment
     Panel_com('start');     % start closed-loop
@@ -85,47 +83,13 @@ for kk = 1:n.trial
     
 	% Rest while saving .bag file
 	disp('Saving...');
-    CL_X(n.exp/2) % wait for .bag to save
-    
-  	% Kill everything
-    [~,~] = system([roscmd 'rostopic pub -1 kinefly/command std_msgs/String exit' '& echo $']); % exit Kinefly
-    [status,~] = system('killall -9 rosmaster'); % kill rosmaster
-
-    if status~=0
-        error('Kinefly did not exit')
-    else
-        fprintf('Kinefly: exit \n \n')
-    end
-    pause(2)
-end
-fprintf('\n Experiment Done');
-toc
-end
-
-function [] = CL_X(time)
-    n.pause = 0.2;
-    Panel_com('stop');
-    Panel_com('set_pattern_id', 2); pause(n.pause)
-    Panel_com('set_position',[1, 5]); pause(n.pause)
-    Panel_com('set_mode', [1,0]); pause(n.pause) % 0=open,1=closed,2=fgen,3=vmode,4=pmode
-	Panel_com('send_gain_bias',[-15,0,0,0]); pause(n.pause) % [xgain,xoffset,ygain,yoffset]
-	Panel_com('start')
-    pause(time)
+    Arena_CL(2,'x',-15)
+    pause(n.exp/2)
 	Panel_com('stop')
 end
-
-function [] = rest(time,rep)
-    n.pause = 0.2;
-    Panel_com('stop');
-    Panel_com('set_pattern_id', 1); pause(n.pause)                	% set pattern
-    Panel_com('set_position',[15, 4]); pause(n.pause)               % set starting position (xpos,ypos)
-    Panel_com('set_mode', [0,0]); pause(n.pause)                    % 0=open,1=closed,2=fgen,3=vmode,4=pmode
-    for kk = 1:rep
-        Panel_com('send_gain_bias',[-30,0,0,0]); pause(n.pause)         % [xgain,xoffset,ygain,yoffset]
-        Panel_com('start')
-        pause(time/(rep*2))
-        Panel_com('send_gain_bias',[30,0,0,0]); pause(n.pause)         % [xgain,xoffset,ygain,yoffset]
-        pause(time/(rep*2))
-        Panel_com('stop')
-    end
+% Kill everything
+system([roscmd 'rostopic pub -1 kinefly/command std_msgs/String exit' '& echo $']); % exit Kinefly
+system('killall -9 rosmaster'); % kill rosmaster
+fprintf('\n Experiment Done');
+toc
 end
