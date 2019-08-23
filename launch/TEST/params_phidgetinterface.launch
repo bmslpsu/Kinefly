@@ -1,0 +1,7 @@
+<launch>
+
+    <param name="stimulus/serial"      type="int"    value="0" />
+    <rosparam param="stimulus/acquirevoltages2msg/channels_ai" >[0,1,2]</rosparam>
+    <rosparam param="stimulus/acquirevoltages2msg/channels_di" >[0,1,2]</rosparam>
+    
+</launch>

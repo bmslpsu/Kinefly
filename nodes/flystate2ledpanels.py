@@ -20,7 +20,6 @@ class Flystate2Ledpanels:
 
         # initialize
         self.name = 'Flystate2ledpanels'
-        rospy.logwarn('Phidget: AO Initialized')
         rospy.init_node(self.name, anonymous=True)
         self.nodename = rospy.get_name()
         self.namespace = rospy.get_namespace()

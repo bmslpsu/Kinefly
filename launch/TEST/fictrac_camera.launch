@@ -5,12 +5,12 @@
     <param name="image_height"      value="240"         />
     <param name="framerate"         value="120"         />
     <param name="pixel_format"      value="yuyv"        />  <!-- yuyv, mjpeg-->
-    <param name="camera_frame_id"   value="usb_cam"     />
-    <param name="io_method"         value="mmap"        />
-    <param name="contrast"          value="50"          />
-    <param name="brightness"        value="50"          />
-    <param name="saturation"        value="32"          />
-    <param name="sharpness"         value="22"          />
+    <!--param name="camera_frame_id"   value="usb_cam"     / -->
+    <!--param name="io_method"         value="mmap"        / -->
+    <!--param name="contrast"          value="50"          / -->
+    <!--param name="brightness"        value="50"          / -->
+    <!--param name="saturation"        value="32"          / -->
+    <!--param name="sharpness"         value="22"          / -->
     <!--param name="autofocus"         value="false"       / -->
     <!--param name="focus"             value="0"           / -->
     <!--param name="camera_info_url"   value="50"          / -->
