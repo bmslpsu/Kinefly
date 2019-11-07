@@ -8,11 +8,11 @@ function [] = Experiment_Walking_Chirp(Fn)
 %---------------------------------------------------------------------------------------------------------------------------------
 %% Set directories & experimental paramters %%
 %---------------------------------------------------------------------------------------------------------------------------------
-rootdir = '/home/jean-michel/Experiment_Data/TEST';
+rootdir = '/home/jean-michel/Experiment_Data/Experiment_Walking_SOS';
 roscmd = 'export LD_LIBRARY_PATH="/home/jean-michel/catkin/devel/lib:/opt/ros/kinetic/lib:/opt/ros/kinetic/lib/x86_64-linux-gnu";';
 
 % EXPERIMENTAL PARAMETERS
-n.exp   = 30 + 3;   % experiment time [s] (add 3 second buffer)
+n.exp   = 20 + 2;   % experiment time [s] (add 2 second buffer)
 n.rest  = 5;     	% rest time [s]
 n.pause = 0.2;  	% pause between panel commands [s]
 n.rep   = 5;        % # of repetitions per fly
@@ -45,16 +45,11 @@ tic
 fprintf('Begin Experiment \n \n')
 
 % Open Kinefly  to set fly
-system([roscmd 'roslaunch Kinefly main_fullROI.launch' ' & echo $!']);
+system([roscmd 'roslaunch Kinefly main.launch' ' & echo $!']);
 disp('Focus fly in camera; press any key continue')
 pause
 
-% Kill everything
-system([roscmd 'rostopic pub -1 kinefly/command std_msgs/String exit' '& echo $']); % exit Kinefly
-system('killall -9 rosmaster'); % kill rosmaster
-
-% Open Kinefly to set masks
-system([roscmd 'roslaunch Kinefly main.launch' ' & echo $!']);
+% Change Kinefly  ROI
 disp('Center masks on fly; press any key continue')
 pause
     
@@ -84,7 +79,7 @@ for kk = 1:n.Amp*n.rep
     pause(2) % buffer
     
     % Run experiment
-    Panel_com('start');     % start closed-loop
+    Panel_com('start');     % start
     pause(n.exp)            % experiment time
     Panel_com('stop');    	% stop experiment
     

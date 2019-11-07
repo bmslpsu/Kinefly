@@ -1,0 +1,12 @@
+<launch>
+	<!-- ========================================================== -->
+	<!-- 						Launch MC DAQ           			-->
+	<!-- ========================================================== -->
+
+	<node name="ReadAI"    		pkg="mcdaq"   	type="ReadAI.py"  			required="true" />
+
+	<rosparam param="mcdaq/AI_channels" > [0,1,2] </rosparam>
+
+	<!-- node name="reconfig_param" 	pkg="mcdaq"   	type="reconfig_param.py"   	required="true" / -->
+
+</launch>

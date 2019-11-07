@@ -4,23 +4,23 @@ function [] = Experiment_CL_HeadWing_Figure(Fn)
 %   INPUT:
 %       Fn      : fly #
 %---------------------------------------------------------------------------------------------------------------------------------
-Fn = 1;
+% Fn = 1;
 %---------------------------------------------------------------------------------------------------------------------------------
 %% Set directories & experimental paramters %%
 %---------------------------------------------------------------------------------------------------------------------------------
 roscmd = 'export LD_LIBRARY_PATH="/home/jean-michel/catkin/devel/lib:/opt/ros/kinetic/lib:/opt/ros/kinetic/lib/x86_64-linux-gnu";';
-rootdir = '/home/jean-michel/Experiment_Data/TEST';
+rootdir = '/home/jean-michel/Experiment_Data/Experiment_HeadWing_CL'; 
 
 % EXPERIMENTAL PARAMETERS
 n.exp   = 20 + 2;   % experiment time [s] (add 2 second buffer)
 n.rest  = 5;     	% rest time [s]
-n.pause = 0.2;  	% pause between panel commands [s]
+n.pause = 0.4;  	% pause between panel commands [s]
 n.rep   = 5;        % # of repetitions per condition per fly
 
 %% Set Experimental Gain Sequence %%
 %---------------------------------------------------------------------------------------------------------------------------------
-WG = [1]; % wing gains
-HG = [2]; % head gains
+WG = [1 3 5]; % wing gains
+HG = [4 8 11]; % head gains
 Gain = nan(length(unique(WG))*length(unique(HG)),2);
 pp = 1;
 for kk = 1:length(WG)
@@ -42,7 +42,6 @@ system('killall -9 rosmaster'); % kill rosmaster
 % Start Kinefly with set AO parameters
 system([roscmd 'roslaunch Kinefly main.launch' ' & echo $!']);
 pause(3)
-
 tic
 fprintf('Begin Experiment \n \n')
 for kk = 1:n.trial
@@ -58,8 +57,11 @@ for kk = 1:n.trial
     
     % Set gain parameters
     system([roscmd 'rosrun dynamic_reconfigure dynparam set /kinefly/flystate2phidgetsanalog v1l1 ' num2str( WGain) '& echo $!']);
-  	system([roscmd 'rosrun dynamic_reconfigure dynparam set /kinefly/flystate2phidgetsanalog v1r1 ' num2str(-WGain) '& echo $!']);
-  	system([roscmd 'rosrun dynamic_reconfigure dynparam set /kinefly/flystate2phidgetsanalog v1ha ' num2str( HGain) '& echo $!']);
+  	pause(1)
+    system([roscmd 'rosrun dynamic_reconfigure dynparam set /kinefly/flystate2phidgetsanalog v1r1 ' num2str(-WGain) '& echo $!']);
+  	pause(1)
+    system([roscmd 'rosrun dynamic_reconfigure dynparam set /kinefly/flystate2phidgetsanalog v1ha ' num2str( HGain) '& echo $!']);
+    pause(1)
 
     % Rest while opening Kinefly
     Arena_CL(2,'x',-15)
@@ -85,7 +87,8 @@ for kk = 1:n.trial
 	disp('Saving...');
     Arena_CL(2,'x',-15)
     pause(n.exp/2)
-	Panel_com('stop')
+    Panel_com('stop') ; pause(n.pause) 
+    %Panel_com('ctr_reset') ; pause(n.pause) 
 end
 % Kill everything
 system([roscmd 'rostopic pub -1 kinefly/command std_msgs/String exit' '& echo $']); % exit Kinefly
