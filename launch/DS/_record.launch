@@ -1,0 +1,13 @@
+<launch>
+	<!-- ========================================================== -->
+	<!-- Record a .bag file with 1 camera image stream  and         --> 
+	<!-- stimulus voltage recording.                                -->
+	<!-- ========================================================== -->
+
+    <arg name="prefix" 	default="Unamed"  	    />
+    <arg name="time" 	default="100" 			/>
+	<arg name="root" 	default="$(env HOME)" 	/>
+	
+    <node name="rosbag"  pkg="rosbag"   type="record" args="-j --buffsize=2048 --duration=$(arg time) /chatter -o $(arg root)/$(arg prefix) /camera/image_raw /kinefly/flystate /mcdaq/AI " />
+
+</launch>

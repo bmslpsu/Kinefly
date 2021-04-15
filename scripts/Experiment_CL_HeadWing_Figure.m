@@ -1,4 +1,4 @@
-function [] = Experiment_CL_HeadWing_Figure(Fn)
+ function [] = Experiment_CL_HeadWing_Figure(Fn)
 %% Experiment_CL_HeadWing_Figure: runs a experiment using the LED arena
 % For Panel Controller v3 and NiDAQ seesion mode
 %   INPUT:
@@ -9,7 +9,7 @@ function [] = Experiment_CL_HeadWing_Figure(Fn)
 %% Set directories & experimental paramters %%
 %---------------------------------------------------------------------------------------------------------------------------------
 roscmd = 'export LD_LIBRARY_PATH="/home/jean-michel/catkin/devel/lib:/opt/ros/kinetic/lib:/opt/ros/kinetic/lib/x86_64-linux-gnu";';
-rootdir = '/home/jean-michel/Experiment_Data/Experiment_HeadWing_CL'; 
+rootdir = '/media/jean-michel/HD_1000GB/JF/Experiment_HeadWing_CL_Figure/AddData'; 
 
 % EXPERIMENTAL PARAMETERS
 n.exp   = 20 + 2;   % experiment time [s] (add 2 second buffer)
@@ -19,8 +19,8 @@ n.rep   = 5;        % # of repetitions per condition per fly
 
 %% Set Experimental Gain Sequence %%
 %---------------------------------------------------------------------------------------------------------------------------------
-WG = [1 3 5]; % wing gains
-HG = [4 8 11]; % head gains
+WG = [1 3 5]; % wing gains  %1 3 5
+HG = [4 8 11]; % head gains  %4 8 11
 Gain = nan(length(unique(WG))*length(unique(HG)),2);
 pp = 1;
 for kk = 1:length(WG)
@@ -37,7 +37,6 @@ n.trial = length(Gain_all);
 %% EXPERIMENT LOOP %%
 %---------------------------------------------------------------------------------------------------------------------------------
 system('killall -9 rosmaster'); % kill rosmaster
-% Panel_com('reset',0)
 
 % Start Kinefly with set AO parameters
 system([roscmd 'roslaunch Kinefly main.launch' ' & echo $!']);
@@ -93,6 +92,6 @@ end
 % Kill everything
 system([roscmd 'rostopic pub -1 kinefly/command std_msgs/String exit' '& echo $']); % exit Kinefly
 system('killall -9 rosmaster'); % kill rosmaster
-fprintf('\n Experiment Done');
+fprintf('\n Experiment Done \n');
 toc
 end

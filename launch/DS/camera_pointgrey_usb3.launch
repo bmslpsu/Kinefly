@@ -21,14 +21,15 @@
     <param name="frame_id"              value="camera" />
     <param name="serial"                value="$(arg camera_serial)" />
 	<param name="video_mode" 		    value="format7_mode0" 	/>
-	<param name="frame_rate" 		    value="100" 		        />
+	<param name="frame_rate" 		    value="50" 		        />
 	<!-- param name="exposure" 		value="10000" 		/ -->
-	<!-- param name="gain" 			value="10" 		    / -->
+    <param name="gain" 			        value="10" 		/>
 	<!-- param name="brightness" 		value="10" 		/ -->
-	<param name="format7_roi_height" 	value="300" 		    /> <!-- widthMAX=648 , heightMax=488-->
-	<param name="format7_roi_width"  	value="500" 		    />
-    <param name="format7_x_offset"      value="74" 		        />
-	<param name="format7_y_offset"  	value="94" 		        />
+	<param name="gamma" 	            value="0.5" 		    />
+	<param name="format7_roi_height" 	value="488" 		    /> <!-- widthMAX=648 , heightMax=488 / -->
+	<param name="format7_roi_width"  	value="648" 		    />
+    <param name="format7_x_offset"      value="0" 		        /> <!-- offset with small ROI x =74	/ -->
+	<param name="format7_y_offset"  	value="0" 		        /> <!-- offset with small ROI y =94	/ -->
 
     <param name="enable_trigger" 		value="false" 		    />
     <param name="trigger_mode" 		    value="Mode14" 		    />
