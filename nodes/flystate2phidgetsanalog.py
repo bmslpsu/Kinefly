@@ -34,7 +34,7 @@ class Flystate2PhidgetsAnalog:
 						 'v00': 0.0, 'v0l1': 0.0, 'v0l2': 0.0, 'v0lr': 0.0, 'v0r1': 0.0, 'v0r2': 0.0, 'v0rr': 0.0, 'v0ha': 0.0, 'v0hr': 0.0, 'v0aa': 0.0, 'v0ar': 0.0, 'v0xi': 0.0,  # L
 						 'v10': 0.0, 'v1l1': 0.0, 'v1l2': 0.0, 'v1lr': 0.0, 'v1r1': 0.0, 'v1r2': 0.0, 'v1rr': 0.0, 'v1ha': 0.0, 'v1hr': 0.0, 'v1aa': 0.0, 'v1ar': 0.0, 'v1xi': 0.0,  # R
 						 'v20': 0.0, 'v2l1': 0.0, 'v2l2': 0.0, 'v2lr': 0.0, 'v2r1': 0.0, 'v2r2': 0.0, 'v2rr': 0.0, 'v2ha': 0.0, 'v2hr': 0.0, 'v2aa': 0.0, 'v2ar': 0.0, 'v2xi': 0.0,  # L-R
-						 'v30': 0.0, 'v3l1': 0.0, 'v3l2': 0.0, 'v3lr': 0.0, 'v3r1': 0.0, 'v3r2': 0.0, 'v3rr': 0.0, 'v3ha': 0.0, 'v3hr': 0.0, 'v3aa': 0.0, 'v3ar': 0.0, 'v3xi': 0.0,  # L+R
+						 'v30': 0.0, 'v3l1': 5.0, 'v3l2': 0.0, 'v3lr': 0.0, 'v3r1': 5.0, 'v3r2': 0.0, 'v3rr': 0.0, 'v3ha': 5.0, 'v3hr': 0.0, 'v3aa': 0.0, 'v3ar': 0.0, 'v3xi': 0.0,  # L+R
 						 'autorange': False,
 						 'serial': 0  # The serial number of the Phidget.  0==any.
 						 }
@@ -182,7 +182,7 @@ class Flystate2PhidgetsAnalog:
 			header = Header(seq=self.iCount, stamp=rospy.Time.now())
 			self.pubAO.publish(header, [0, 1 ,2 ,3], voltages)
 			self.iCount += 1
-		
+			#rospy.logwarn('here')
 			for i in range(4):
 				if self.enable[i]:
 					try:

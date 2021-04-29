@@ -1,0 +1,27 @@
+<launch>
+	<!-- ========================================================== -->
+	<!-- Configuration of the reinfocment learning environment      -->
+	<!-- ========================================================== -->
+
+    <!--
+
+    v#0  - constant offset
+    v#ha - head angle
+
+    -->
+
+    <!-- Arena panels -->
+    <param name="RL/autorange"      type="bool"   value="false" />
+    <param name="RL/panels/pattern_id"     type="int"    value="2"     />
+    <param name="RL/panels/pattern_ypos"   type="int"    value="5"     />
+    <param name="RL/panels/pattern_xpos"   type="int"    value="48"    />
+
+    <!-- Phidget output for head & wings -->
+    <param name="RL/phidget/head_channel"   type="string"   value="v0ha" />
+    <param name="RL/phidget/lwing_channel"  type="string"   value="v0l1" />
+    <param name="RL/phidget/rwing_channel"  type="string"   value="v0r1" />
+
+    <!-- Learning parameters -->
+
+
+   </launch>
