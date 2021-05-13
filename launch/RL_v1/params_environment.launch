@@ -1,0 +1,23 @@
+<launch>
+	<!-- ============================================================= -->
+	<!-- Configuration of the arena environment (led panels + phidget) -->
+	<!-- ============================================================= -->
+
+    <!--
+
+    v#0  -
+
+    -->
+
+    <!-- Arena panels -->
+    <!-- param name="env/autorange"             type="bool"   value="false" -->
+    <param name="panels/pattern_id"     type="int"    value="3"     />
+    <param name="panels/pattern_ypos"   type="int"    value="8"     /> <!-- 1 less than actual (8) -->
+    <param name="panels/pattern_xpos"   type="int"    value="40"    /> <!-- 1 less than actual (91) -->
+
+    <!-- Phidget output for head & wings -->
+    <param name="phidget/head_channel"   type="string"   value="v0ha" />
+    <param name="phidget/lwing_channel"  type="string"   value="v0l1" />
+    <param name="phidget/rwing_channel"  type="string"   value="v0r1" />
+
+   </launch>

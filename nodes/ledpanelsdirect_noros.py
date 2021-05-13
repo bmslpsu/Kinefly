@@ -7,6 +7,7 @@ import rospy
 import serial
 import numpy as N
 
+
 if __name__ == '__main__':
     from ledpanels.msg import MsgPanelsCommand
     from ledpanels.srv import *
@@ -18,16 +19,6 @@ import time
 
 
 #######################################################################################################
-# ledpanels node receives message commands on the topic 'ledpanels/command', and communicates with
-# the panel hardware.
-#
-# For example:
-# rosrun ledpanels ledpanels.py
-#
-# and then:
-# rostopic pub -1 ledpanels/command ledpanels/MsgPanelsCommand all_on 0 0 0 0 0 0
-# rostopic pub -1 ledpanels/command ledpanels/MsgPanelsCommand set_pattern_id 1 0 0 0 0 0
-# (panel commands take 0 to 6 parameters, but the rostopic command needs to see all six, hence the "all_on 0 0 0 0 0 0", etc).
 #
 class LEDPanels():
     def __init__(self):
@@ -379,7 +370,7 @@ class LEDPanels():
         for j in range(nChars, 0, -1):
             tmp = N.floor((num_rem) / (2 ** (8 * (j - 1))))
             num_rem = num_rem - tmp * (2 ** (8 * (j - 1)))
-            char_list[j - 1] = chr(int(tmp))
+            char_list[j- 1] = chr(int(tmp))
 
         return char_list
 
@@ -525,10 +516,15 @@ if __name__ == '__main__':
     if panels.initialized:
         #panels.reset()
         panels.stop()
-        panels.set_pattern_id(2)
-        panels.set_position(1,5)
+        panels.set_pattern_id(3)
+        panels.set_position(91,8)
+        # panels.send_gain_bias_16(16,0,0,0)
+        # panels.set_mode(1,0)
+        # panels.start()
+
+        print('here')
         panels.set_mode(4,0)
-        panels.set_posfunc_id(1,5)
+        panels.set_posfunc_id(1,7)
         panels.set_funcx_freq(400)
         panels.start()
 
