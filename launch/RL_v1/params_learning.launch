@@ -10,8 +10,8 @@
     -->
 
     <!-- Learning hyperparameters -->
-    <param name="action_time"       type="double"       value="3"     />
-    <param name="rest_time"         type="double"       value="0"     />
+    <param name="action_time"       type="double"       value="5"     />
+    <param name="rest_time"         type="double"       value="1"     />
     <param name="epsilon"           type="double"       value="0.1"     />
 
    </launch>

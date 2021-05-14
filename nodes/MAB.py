@@ -109,6 +109,7 @@ class eps_bandit:
         if test:
             self.env.setFunc(params) # update environment
         else:
+            print(params)
             self.env.setGains(*params) # update environment
 
         reward, panel_data, time_vector = self.env.act(self.action_time, self.rest_time)  # interact with environment
@@ -137,7 +138,7 @@ class eps_bandit:
             self.pull(test)
             self.reward[i] = self.mean_reward
             print("EP: " + str(i) + " Score: " + str(self.reward[i]) + " ")
-            sys.stdout.flush()
+            # sys.stdout.flush()
             # print("EP: " + str(i) + " Score: " + str(self.reward[i]) + " ", end="\r", flush=False)
 
             self.k_sort = np.squeeze(np.flipud(np.argsort(self.k_reward, axis=0)))
@@ -169,10 +170,11 @@ class eps_bandit:
             if not os.path.exists(iter_root):
                 os.makedirs(iter_root)
 
-            itername = 'iter_' + str(self.n - 1) + '.json'
+            basename = os.path.basename(filepath)
+            itername = basename + '_iter_' + str(self.n - 1) + '.json'
             iterpath = os.path.join(filepath, itername)
-            save_dict = util.getDictFields(dict=currentObj, fields=self.save_fields)
-            env_dict = util.getDictFields(dict=self.env.__dict__, fields=self.env_save_fields)
+            save_dict = util.getDictFields(indict=currentObj, fields=self.save_fields)
+            env_dict = util.getDictFields(indict=self.env.__dict__, fields=self.env_save_fields)
             save_dict['env'] = env_dict
             with open(iterpath, 'wb') as f:
                 json.dump(save_dict, f)  # dump current action data to json
@@ -200,4 +202,4 @@ class eps_bandit:
 
 
 if __name__ == '__main__':
-    env_init = Environment(init_wing_gain=1, init_head_gain=0, init_arena_gain=0)
+    env_init = Environment(init_wing_gain=1, init_head_gain=0, init_arena_gain=50)

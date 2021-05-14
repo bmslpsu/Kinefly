@@ -121,7 +121,7 @@ class Environment(object):
         time.sleep(0.5) # wait to start panels
 
         # Update gains
-        self.setGains(wing_gain=5, head_gain=0)
+        # self.setGains(wing_gain=5, head_gain=0)
 
         # Start panels
         self.panel_control.start()

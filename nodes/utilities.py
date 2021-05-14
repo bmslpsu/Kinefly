@@ -121,18 +121,18 @@ def loadjson(root=None):
 
     return data
 
-def getDictFields(dict, fields):
-    out = { }
+def getDictFields(indict, fields):
+    outdict = { }
     # keys = dict.keys()
     fields.sort()
     for f in range(len(fields)):
         # print(fields[f])
-        data = dict[fields[f]]
+        data = indict[fields[f]]
         if isinstance(data, (list, np.ndarray, np.matrix)):
             data = data.tolist()
-        out[fields[f]] = data
+        outdict[fields[f]] = data
 
-    return out
+    return outdict
 
 
 if __name__ == '__main__':

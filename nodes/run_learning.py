@@ -8,21 +8,21 @@ from MAB import eps_bandit
 from arena_environment import Environment
 
 saveB = True
-root = r"/home/jean-michel/learning_project/test_v1"
-basename = 'fly_0'
+root = r"/home/jean-michel/learning_project/Experiment_1"
+basename = 'fly_101'
 basepath = os.path.join(root, basename)
 
-init_agent = util.loadjson(root=root)
+# init_agent = util.loadjson(root=root)
 
-env_init = Environment(init_wing_gain=1, init_head_gain=0, init_arena_gain=1)
+env_init = Environment(init_wing_gain=1, init_head_gain=0, init_arena_gain=-5)
 
-kwing = util.stepArray(0, 5, 50)
+kwing = util.stepArray(1, 0.25, 20)
 khead = np.asarray([0])
 Kmap = util.combvec(kwing, khead)
 k = Kmap.shape[0]
 
 episodes = 1
-iters = 50
+iters = 2000
 rewards = np.zeros(iters)
 selection = np.zeros(k)
 
