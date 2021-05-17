@@ -12,8 +12,8 @@
     <!-- Arena panels -->
     <!-- param name="env/autorange"             type="bool"   value="false" -->
     <param name="panels/pattern_id"     type="int"    value="3"     />
-    <param name="panels/pattern_ypos"   type="int"    value="8"     /> <!-- 1 less than actual (8) -->
-    <param name="panels/pattern_xpos"   type="int"    value="40"    /> <!-- 1 less than actual (91) -->
+    <param name="panels/pattern_ypos"   type="int"    value="92"     /> <!-- 1 less than actual (8) -->
+    <param name="panels/pattern_xpos"   type="int"    value="46"    /> <!-- 1 less than actual (40) -->
 
     <!-- Phidget output for head & wings -->
     <param name="phidget/head_channel"   type="string"   value="v0ha" />

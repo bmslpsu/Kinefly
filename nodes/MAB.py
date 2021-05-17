@@ -102,14 +102,17 @@ class eps_bandit:
             elif p < self.eps: # probability below eps
                 a = np.random.choice(self.k) # randomly select an action
             else: # take greedy action
-                a = np.argmax(self.k_reward) # choose arm with maximum expected reward
+                un_picked_arms = self.k_n == 0 # arms not chosen yet
+                k_reward_temp = self.k_reward.copy() # copy of rewards per arm
+                k_reward_temp[un_picked_arms] = -np.inf # set arms not yet chosen to -inf to make sure we don't choose them
+                a = np.argmax(k_reward_temp) # choose arm with maximum expected reward
 
         # Get reward
         params = self.param_map[a,:] # get parameters correponding to chosen arm
         if test:
             self.env.setFunc(params) # update environment
         else:
-            print(params)
+            # print(params)
             self.env.setGains(*params) # update environment
 
         reward, panel_data, time_vector = self.env.act(self.action_time, self.rest_time)  # interact with environment
@@ -190,7 +193,7 @@ class eps_bandit:
         self.axs[0].plot(self.time_data, self.action_data, 'r-')
         self.axs[1].plot(self.reward[0:self.n-1], '-bo')
         plt.pause(0.05)
-        time.sleep(0.2)
+        time.sleep(0.05)
 
     def reset(self):
         # Resets results while keeping settings

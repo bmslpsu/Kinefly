@@ -8,15 +8,15 @@ from MAB import eps_bandit
 from arena_environment import Environment
 
 saveB = True
-root = r"/home/jean-michel/learning_project/Experiment_1"
-basename = 'fly_101'
+root = r"/home/jean-michel/learning_project/Experiment_2"
+basename = 'fly_7'
 basepath = os.path.join(root, basename)
 
 # init_agent = util.loadjson(root=root)
 
-env_init = Environment(init_wing_gain=1, init_head_gain=0, init_arena_gain=-5)
+env_init = Environment(init_wing_gain=1, init_head_gain=0, init_arena_gain=-30)
 
-kwing = util.stepArray(1, 0.25, 20)
+kwing = util.stepArray(1, 0.5, 10)
 khead = np.asarray([0])
 Kmap = util.combvec(kwing, khead)
 k = Kmap.shape[0]

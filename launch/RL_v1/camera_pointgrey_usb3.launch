@@ -21,13 +21,13 @@
     <param name="frame_id"              value="camera"                  />
     <param name="serial"                value="$(arg camera_serial)"    />
 	<param name="video_mode" 		    value="format7_mode0" 	        />
-	<param name="frame_rate" 		    value="100" 		                />
+	<param name="frame_rate" 		    value="80" 		                />
 	<param name="auto_exposure"         value="false"                   />
 	<param name="exposure" 		        value="2.5" 		            />
     <param name="auto_gain"             value="false"                   />
 	<param name="gain" 			        value="22" 		                />
-	<param name="brightness" 		    value="7" 		                />
-	<param name="gamma" 		        value="1.05" 		                />
+	<param name="brightness" 		    value="1.56" 		                />
+	<param name="gamma" 		        value="2" 		                />
     <param name="auto_shutter"          value="false"                   />
     <param name="shutter_speed"         value="1"                       />
 	<param name="format7_roi_height" 	value="350" 		            /> <!-- widthMAX=648 , heightMax=488-->
